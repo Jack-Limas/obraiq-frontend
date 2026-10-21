@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Send, Bot, User } from "lucide-react";
 import { useAskAssistant } from "@/lib/assistant-service";
+import { AiMarkdown } from "@/components/ai/ai-markdown";
 import { getHttpStatus } from "@/lib/api-error";
 import { apiErrorCode, quotaHours } from "@/lib/api-client";
 
@@ -18,6 +19,7 @@ const SUGGESTION_KEYS = ["costRisk", "lowStock", "progress"] as const;
 
 export function AssistantChat() {
   const t = useTranslations("assistant");
+  const locale = useLocale();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const ask = useAskAssistant();
@@ -35,7 +37,7 @@ export function AssistantChat() {
     setInput("");
 
     try {
-      const answer = await ask.mutateAsync(trimmed);
+      const answer = await ask.mutateAsync({ question: trimmed, locale });
       setMessages((prev) => [...prev, { id: nextId.current++, role: "assistant", text: answer }]);
     } catch (error) {
       // 503 AI_QUOTA_EXCEEDED = free daily quota spent; 502 = Gemini down. The system keeps working without it
@@ -76,16 +78,17 @@ export function AssistantChat() {
               </div>
             )}
             <div
-              className={`max-w-[80%] whitespace-pre-line rounded-lg px-3 py-2 text-sm ${
+              className={`rounded-2xl px-3.5 py-2.5 text-sm ${
                 m.role === "user"
-                  ? "bg-accent text-white"
+                  ? "max-w-[80%] whitespace-pre-line rounded-br-md bg-accent text-white"
                   : m.failed
-                    ? "border border-critical/30 bg-critical/10 text-ink"
-                    : "bg-surface-2 text-ink"
+                    ? "max-w-[85%] whitespace-pre-line rounded-bl-md border border-critical/30 bg-critical/10 text-ink"
+                    : "max-w-[88%] rounded-bl-md border border-line bg-surface-2 text-ink"
               }`}
             >
               <span className="sr-only">{m.role === "user" ? t("you") : t("title")}: </span>
-              {m.text}
+              {/* Only the AI's successful answers are Markdown; what the user typed stays plain text */}
+              {m.role === "assistant" && !m.failed ? <AiMarkdown text={m.text} /> : m.text}
             </div>
             {m.role === "user" && (
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-surface-2 text-ink-muted" aria-hidden>
@@ -95,7 +98,23 @@ export function AssistantChat() {
           </div>
         ))}
 
-        {ask.isPending && <p className="animate-pulse text-xs text-ink-muted motion-reduce:animate-none">{t("thinking")}</p>}
+        {ask.isPending && (
+          <div className="flex items-center gap-2" role="status">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ai/15 text-ai" aria-hidden>
+              <Bot size={14} />
+            </div>
+            <div className="flex items-center gap-1 rounded-2xl rounded-bl-md border border-line bg-surface-2 px-3.5 py-3" aria-hidden>
+              {[0, 150, 300].map((delay) => (
+                <span
+                  key={delay}
+                  className="h-1.5 w-1.5 animate-bounce rounded-full bg-ai motion-reduce:animate-none"
+                  style={{ animationDelay: `${delay}ms` }}
+                />
+              ))}
+            </div>
+            <span className="sr-only">{t("thinking")}</span>
+          </div>
+        )}
         <div ref={bottomRef} />
       </div>
 
