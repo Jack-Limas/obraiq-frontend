@@ -1,44 +1,12 @@
 "use client";
 
-import { createContext, useContext, type ReactNode } from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-/** Tells each list item which marker to draw (an accent dot or a numbered badge). */
-const ListKind = createContext<"bullet" | "number">("bullet");
-
-function ListItem({ children }: { children?: ReactNode }) {
-  const kind = useContext(ListKind);
-  return (
-    <li className={`relative leading-relaxed ${kind === "number" ? "pl-7 [counter-increment:ai-item]" : "pl-5"}`}>
-      {kind === "number" ? (
-        <span
-          aria-hidden
-          className="absolute left-0 top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-ai/15 font-mono-data text-[11px] font-semibold text-ai before:content-[counter(ai-item)]"
-        />
-      ) : (
-        <span aria-hidden className="absolute left-1 top-[0.6em] h-1.5 w-1.5 rounded-full bg-ai" />
-      )}
-      <div className="min-w-0 [&>p]:mt-0">{children}</div>
-    </li>
-  );
-}
-
 const components: Components = {
-  p: ({ children }) => <p className="leading-relaxed [&:not(:first-child)]:mt-2">{children}</p>,
-  strong: ({ children }) => <strong className="font-semibold text-ink">{children}</strong>,
-  em: ({ children }) => <em className="italic">{children}</em>,
-  ul: ({ children }) => (
-    <ListKind.Provider value="bullet">
-      <ul className="mt-2 space-y-1.5 first:mt-0">{children}</ul>
-    </ListKind.Provider>
-  ),
-  ol: ({ children }) => (
-    <ListKind.Provider value="number">
-      <ol className="mt-2 space-y-1.5 [counter-reset:ai-item] first:mt-0">{children}</ol>
-    </ListKind.Provider>
-  ),
-  li: ({ children }) => <ListItem>{children}</ListItem>,
+  // Lists use native markers (disc / decimal, tinted by .ai-markdown li::marker in globals.css)
+  ul: ({ children }) => <ul className="mt-2 first:mt-0">{children}</ul>,
+  ol: ({ children }) => <ol className="mt-2 first:mt-0">{children}</ol>,
   h1: ({ children }) => <p className="mt-3 text-sm font-semibold text-ink first:mt-0">{children}</p>,
   h2: ({ children }) => <p className="mt-3 text-sm font-semibold text-ink first:mt-0">{children}</p>,
   h3: ({ children }) => <p className="mt-3 text-sm font-semibold text-ink first:mt-0">{children}</p>,
@@ -77,7 +45,7 @@ const components: Components = {
  */
 export function AiMarkdown({ text, className = "" }: { text: string; className?: string }) {
   return (
-    <div className={`text-sm text-ink ${className}`}>
+    <div className={`ai-markdown text-sm text-ink ${className}`}>
       <ReactMarkdown remarkPlugins={[remarkGfm]} skipHtml components={components}>
         {text}
       </ReactMarkdown>
