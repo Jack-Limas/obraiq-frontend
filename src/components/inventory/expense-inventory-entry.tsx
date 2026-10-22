@@ -86,13 +86,13 @@ export function ExpenseInventoryEntry({
       </label>
 
       <AnimatePresence initial={false}>
+        {/* Clipping is needed only while the height animates: left on, it cut off the material dropdown */}
         {value.enabled && (
           <motion.div
-            initial={reduceMotion ? false : { height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={reduceMotion ? { opacity: 0 } : { height: 0, opacity: 0 }}
+            initial={reduceMotion ? false : { height: 0, opacity: 0, overflow: "hidden" }}
+            animate={{ height: "auto", opacity: 1, transitionEnd: { overflow: "visible" } }}
+            exit={reduceMotion ? { opacity: 0 } : { height: 0, opacity: 0, overflow: "hidden" }}
             transition={{ duration: 0.22, ease: "easeOut" }}
-            className="overflow-hidden"
           >
             <div className="grid grid-cols-1 gap-4 border-t border-line p-4 sm:grid-cols-[1fr_180px] sm:p-5">
               <div>
