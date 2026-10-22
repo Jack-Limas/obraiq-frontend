@@ -1328,6 +1328,7 @@
       "outHint": "Sale material hacia una obra",
       "material": "Material",
       "materialPlaceholder": "Busca y elige un material",
+      "noResults": "Ningún material coincide con la búsqueda.",
       "quantity": "Cantidad",
       "quantityIn": "Cantidad ({unit})",
       "project": "Obra",

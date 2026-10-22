@@ -149,6 +149,7 @@ export function MaterialPicker({
       {open && (
         <ul id={listId} role="listbox" className="absolute z-30 mt-1 max-h-72 w-full overflow-y-auto rounded-lg border border-line bg-surface py-1 shadow-xl">
           {isFetching && results.length === 0 && <li className="px-3 py-2 text-sm text-ink-muted">{tCommon("loading")}</li>}
+          {!isFetching && results.length === 0 && <li className="px-3 py-2 text-sm text-ink-muted">{t("movement.noResults")}</li>}
           {results.map((m) => (
             <li key={m.id} role="option" aria-selected={false}>
               <button

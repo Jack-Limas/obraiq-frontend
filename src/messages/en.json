@@ -1328,6 +1328,7 @@
       "outHint": "Material leaves for a project",
       "material": "Material",
       "materialPlaceholder": "Search and pick a material",
+      "noResults": "No material matches your search.",
       "quantity": "Quantity",
       "quantityIn": "Quantity ({unit})",
       "project": "Project",
