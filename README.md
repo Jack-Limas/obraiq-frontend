@@ -70,3 +70,5 @@ The full list of endpoints and the AI error contract are in the [backend README]
 ## Documentation
 
 - [docs/rendering-strategy.md](docs/rendering-strategy.md): rendering pattern per screen (CSR/SSG), justification, advantages and bottlenecks
+- [docs/deployment.md](docs/deployment.md): reconnecting the Vercel project to this repository
+- [docs/publish.md](docs/publish.md): git commands to publish this repository
