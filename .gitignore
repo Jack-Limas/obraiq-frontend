@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+cookies.txt
+cookies*.txt
+*.cookies
+
+# the example file is documentation, not a secret
+!.env.example
